@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" class="dark-mode">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDI Effects - Educational Resources</title>
+    <style>
+        :root {
+            --bg-color: #f5f5f5;
+            --container-bg: white;
+            --text-color: #333;
+            --header-bg: #2c3e50;
+            --header-text: white;
+            --file-item-bg: #f9f9f9;
+            --code-bg: #f1f1f1;
+            --code-text: #333;
+            --border-color: #ddd;
+            --disclaimer-bg: #ffebee;
+            --disclaimer-border: #ef5350;
+            --disclaimer-title: #c62828;
+            --alert-bg: #fff8e1;
+            --alert-border: #ffb300;
+            --btn-bg: #2ecc71;
+            --btn-hover: #27ae60;
+        }
+        
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --container-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --header-bg: #1f2937;
+            --header-text: #f3f4f6;
+            --file-item-bg: #3d3d3d;
+            --code-bg: #282c34;
+            --code-text: #abb2bf;
+            --border-color: #4d4d4d;
+            --disclaimer-bg: #3d2121;
+            --disclaimer-border: #cf6679;
+            --disclaimer-title: #cf6679;
+            --alert-bg: #3d3524;
+            --alert-border: #ffc107;
+            --btn-bg: #1b8b5a;
+            --btn-hover: #147a4d;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--container-bg);
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            margin-top: 0;
+        }
+        
+        .disclaimer {
+            background-color: var(--disclaimer-bg);
+            border-left: 4px solid var(--disclaimer-border);
+            padding: 1rem;
+            margin: 2rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .disclaimer h2 {
+            margin-top: 0;
+            color: var(--disclaimer-title);
+        }
+        
+        .disclaimer p {
+            margin-bottom: 0;
+        }
+        
+        .files {
+            margin: 2rem 0;
+        }
+        
+        .file-item {
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            background-color: var(--file-item-bg);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .file-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .file-name {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .file-description {
+            margin-bottom: 1.5rem;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background-color: var(--btn-bg);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        
+        .download-btn:hover {
+            background-color: var(--btn-hover);
+        }
+        
+        .code-preview {
+            background-color: var(--code-bg);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 0.9rem;
+            max-height: 200px;
+            overflow-y: auto;
+            color: var(--code-text);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--header-bg);
+            color: var(--header-text);
+        }
+        
+        .alert {
+            background-color: var(--alert-bg);
+            border-left: 4px solid var(--alert-border);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GDI Effects Collection</h1>
+        <p>Educational resources for understanding Windows GDI capabilities</p>
+    </header>
+    
+    <div class="container">
+        <div class="disclaimer">
+            <h2>⚠️ IMPORTANT DISCLAIMER</h2>
+            <p>These files are provided for <strong>EDUCATIONAL AND ENTERTAINMENT PURPOSES ONLY</strong>. The scripts demonstrate Windows GDI (Graphics Device Interface) effects and are completely harmless.</p>
+            <p>They do not damage your system, install malware, or compromise your data in any way. However, they may cause visual disruptions that can be stopped by ending the Python process or restarting your computer.</p>
+            <p>By downloading these files, you acknowledge that:</p>
+            <ul>
+                <li>You will use them responsibly and for educational purposes only</li>
+                <li>You understand their effects and know how to stop them</li>
+                <li>You will not use them to disrupt others' computers without consent</li>
+            </ul>
+        </div>
+        
+        <div class="alert">
+            <p><strong>Note:</strong> These scripts require Python and the pywin32 module to be installed on a Windows system.</p>
+        </div>
+        
+        <div class="files">
+            <div class="file-item">
+                <div class="file-name">bouncingtext.py</div>
+                <div class="file-description">Creates bouncing colorful text that moves across your screen with the message "YOU ARE AN IDIOT!"</div>
+                <div class="code-preview">
+                    <pre>from win32api import *
+from win32gui import *
+import time
+import random
+
+def main():
+    x, y = 0, 0
+    signX, signY = 1, 1
+    incrementor = 5
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        text = "YOU ARE AN IDIOT!"
+        color = random.randint(0, 255) | (random.randint(0, 255) << 8) | (random.randint(0, 255) << 16)
+        SetTextColor(hdc, color)
+        SetBkMode(hdc, 0)
+        ExtTextOut(hdc, x, y, 0, None, text, None)
+        x += incrementor * signX
+        y += incrementor * signY
+        if y >= h or y <= 0:
+            signY *= -1
+        if x >= w or x <= 0:
+            signX *= -1
+        time.sleep(0.01)
+        ReleaseDC(0, hdc)
+
+main()</pre>
+                </div>
+                <button class="download-btn" onclick="downloadFile('bouncingtext.py')">Download File</button>
+            </div>
+            
+            <div class="file-item">
+                <div class="file-name">text.py</div>
+                <div class="file-description">Displays random colorful "You Are An Idiot" text in various positions across your screen.</div>
+                <div class="code-preview">
+                    <pre>from win32api import *
+from win32gui import *
+import time
+import random
+
+def main():
+    while True:
+        w, hdc = GetSystemMetrics(0), GetDC(0)
+        text = "You Are An Idiot"
+        color = random.randint(0, 255) | (random.randint(0, 255) << 8) | (random.randint(0, 255) << 16)
+        SetTextColor(hdc, color)
+        SetBkMode(hdc, 0)
+        x, y = random.randint(0, w), random.randint(0, w)
+        ExtTextOut(hdc, x, y, 0, None, text, None)
+        time.sleep(0.001)
+        ReleaseDC(0, hdc)
+
+main()</pre>
+                </div>
+                <button class="download-btn" onclick="downloadFile('text.py')">Download File</button>
+            </div>
+            
+            <div class="file-item">
+                <div class="file-name">massduplicate.py</div>
+                <div class="file-description">Creates a visual effect by duplicating and randomly placing screen sections, creating a fragmented appearance.</div>
+                <div class="code-preview">
+                    <pre>from win32api import *
+from win32con import *
+from win32gui import *
+import random
+
+def main():
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        BitBlt(hdc, random.randint(-500, 500), random.randint(-500, 500), w, h, hdc, random.randint(-500, 500), random.randint(-500, 500), SRCCOPY)
+        ReleaseDC(0, hdc)
+
+main()</pre>
+                </div>
+                <button class="download-btn" onclick="downloadFile('massduplicate.py')">Download File</button>
+            </div>
+            
+            <div class="file-item">
+                <div class="file-name">flash.py</div>
+                <div class="file-description">Creates a flashing effect by inverting the colors on your screen at regular intervals. Warning: May be uncomfortable for those with photosensitivity.</div>
+                <div class="code-preview">
+                    <pre># thanks to malwux on discord for giving me this code (had alot of syntax errors but i fixed and modified it)
+
+from win32api import *
+from win32con import *
+from win32gui import *
+import time
+
+def main():
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        PatBlt(hdc, 0, 0, w, h, PATINVERT)
+        time.sleep(1)
+        ReleaseDC(0, hdc)
+
+main()</pre>
+                </div>
+                <button class="download-btn" onclick="downloadFile('flash.py')">Download File</button>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <h2>⚠️ How to Stop These Effects</h2>
+            <p>If you need to stop any of these effects:</p>
+            <ol>
+                <li>Press <strong>Ctrl+Alt+Delete</strong> and open Task Manager</li>
+                <li>Find the Python process running the script</li>
+                <li>Select it and click "End Task"</li>
+                <li>Alternatively, restart your computer if needed</li>
+            </ol>
+        </div>
+    </div>
+    
+    <footer>
+        <p>These files are provided for educational purposes only. Use responsibly.</p>
+        <p>&copy; 2025 - GDI Effects Educational Collection</p>
+    </footer>
+    
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    
+    <script>
+        // File content definitions
+        const fileContents = {
+            'bouncingtext.py': `from win32api import *
+from win32gui import *
+import time
+import random
+
+def main():
+    x, y = 0, 0
+    signX, signY = 1, 1
+    incrementor = 5
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        text = "YOU ARE AN IDIOT!"
+        color = random.randint(0, 255) | (random.randint(0, 255) << 8) | (random.randint(0, 255) << 16)
+        SetTextColor(hdc, color)
+        SetBkMode(hdc, 0)
+        ExtTextOut(hdc, x, y, 0, None, text, None)
+        x += incrementor * signX
+        y += incrementor * signY
+        if y >= h or y <= 0:
+            signY *= -1
+        if x >= w or x <= 0:
+            signX *= -1
+        time.sleep(0.01)
+        ReleaseDC(0, hdc)
+
+main()`,
+            'text.py': `from win32api import *
+from win32gui import *
+import time
+import random
+
+def main():
+    while True:
+        w, hdc = GetSystemMetrics(0), GetDC(0)
+        text = "You Are An Idiot"
+        color = random.randint(0, 255) | (random.randint(0, 255) << 8) | (random.randint(0, 255) << 16)
+        SetTextColor(hdc, color)
+        SetBkMode(hdc, 0)
+        x, y = random.randint(0, w), random.randint(0, w)
+        ExtTextOut(hdc, x, y, 0, None, text, None)
+        time.sleep(0.001)
+        ReleaseDC(0, hdc)
+
+main()`,
+            'massduplicate.py': `from win32api import *
+from win32con import *
+from win32gui import *
+import random
+
+def main():
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        BitBlt(hdc, random.randint(-500, 500), random.randint(-500, 500), w, h, hdc, random.randint(-500, 500), random.randint(-500, 500), SRCCOPY)
+        ReleaseDC(0, hdc)
+
+main()`,
+            'flash.py': `# thanks to malwux on discord for giving me this code (had alot of syntax errors but i fixed and modified it)
+
+from win32api import *
+from win32con import *
+from win32gui import *
+import time
+
+def main():
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        PatBlt(hdc, 0, 0, w, h, PATINVERT)
+        time.sleep(1)
+        ReleaseDC(0, hdc)
+
+main()`
+        };
+        
+        // Function to download a file
+        function downloadFile(filename) {
+            // Get the content for the specific file
+            const content = fileContents[filename];
+            
+            // Create a blob with the file content
+            const blob = new Blob([content], { type: 'text/plain' });
+            
+            // Create a temporary anchor element
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            
+            // Trigger the download
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+        }
+        
+        // Dark mode toggle function
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-mode');
+            
+            // Save preference to local storage
+            if (document.documentElement.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        // Check for saved theme preference
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.classList.remove('dark-mode');
+            }
+        });
+    </script>
+</body>
+</html>
