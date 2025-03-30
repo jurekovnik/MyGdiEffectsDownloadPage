@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDI Effects Collection</title>
+    <style>
+        :root {
+            --primary-color: #4a6eb5;
+            --secondary-color: #2d3748;
+            --accent-color: #6d28d9;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --text-color: #333333;
+            --border-color: #e2e8f0;
+            --success-color: #48bb78;
+            --warning-color: #ed8936;
+            --danger-color: #f56565;
+        }
+        
+        .dark-mode {
+            --primary-color: #667eea;
+            --secondary-color: #1a202c;
+            --accent-color: #9f7aea;
+            --background-color: #1f2937;
+            --card-background: #2d3748;
+            --text-color: #f7fafc;
+            --border-color: #4a5568;
+            --success-color: #68d391;
+            --warning-color: #f6ad55;
+            --danger-color: #fc8181;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .welcome-screen {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .welcome-card {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            max-width: 600px;
+            width: 100%;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .welcome-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .gdi-list {
+            display: none;
+        }
+        
+        .file-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .file-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid var(--border-color);
+        }
+        
+        .file-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .file-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .file-description {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        
+        .code-preview {
+            background-color: var(--secondary-color);
+            color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 0.85rem;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .download-btn:hover {
+            background-color: var(--accent-color);
+        }
+        
+        .disclaimer {
+            background-color: var(--warning-color);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            position: relative;
+        }
+        
+        .disclaimer h2 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .disclaimer ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .back-button {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 2rem;
+            cursor: pointer;
+        }
+        
+        .back-button:hover {
+            background-color: var(--accent-color);
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border: none;
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            background-color: var(--accent-color);
+        }
+        
+        /* New top toggle button styles */
+        .theme-toggle-top {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: var(--card-background);
+            color: var(--text-color);
+            padding: 10px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle-top:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .theme-toggle-top .icon {
+            font-size: 1.2rem;
+        }
+        
+        /* Header bar for GDI list page */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-screen" id="welcome">
+        <!-- New top toggle button -->
+        <button class="theme-toggle-top" id="themeToggleTop">
+            <span class="icon" id="themeIcon">🌙</span>
+            <span id="themeText">Dark Mode</span>
+        </button>
+        
+        <div class="welcome-card">
+            <h1>GDI Effects Collection</h1>
+            <p>This collection contains various Windows GDI (Graphics Device Interface) effects written in Python. These scripts create visual effects on your screen.</p>
+            <p>Would you like to see the available GDI effects?</p>
+            <div class="button-container">
+                <button class="btn btn-primary" id="showGdiBtn">Yes, Show Me</button>
+                <button class="btn btn-secondary" id="noThanksBtn">No, Thanks</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="gdi-list" id="gdiList">
+        <div class="container">
+            <div class="header">
+                <h1>GDI Effects Collection</h1>
+                <!-- Adding second theme toggle on this page too -->
+                <button class="theme-toggle-top" id="themeToggleTop2">
+                    <span class="icon" id="themeIcon2">🌙</span>
+                    <span id="themeText2">Dark Mode</span>
+                </button>
+            </div>
+            
+            <div class="disclaimer">
+                <h2>⚠️ IMPORTANT DISCLAIMER</h2>
+                <p>These Python scripts are <strong>COMPLETELY HARMLESS</strong> and provided for <strong>EDUCATIONAL AND ENTERTAINMENT PURPOSES ONLY</strong>.</p>
+                <p>The scripts demonstrate Windows GDI (Graphics Device Interface) visual effects. They do not damage your system, install malware, or compromise your data in any way.</p>
+                <ul>
+                    <li>These effects are temporary and will stop when the script is terminated</li>
+                    <li>To stop any effect, press Ctrl+Alt+Delete and end the Python process</li>
+                    <li>These scripts require Python and the pywin32 module to run</li>
+                    <li>Use responsibly and for educational purposes only</li>
+                </ul>
+            </div>
+            
+            <div class="file-grid">
+                <!-- Triangles.py -->
+                <div class="file-card">
+                    <div class="file-name">Triangles.py</div>
+                    <div class="file-description">Creates random colored triangles all over your screen with gradient fills.</div>
+                    <div class="code-preview">
+                        <pre>import win32con
+import win32gui
+import win32ui
+import ctypes
+import random
+
+
+def draw_gradient_triangle(hdc):
+    for _ in range(25):
+        l, t, r, b = win32gui.GetClientRect(win32gui.GetDesktopWindow())
+        vertices = (
+            {
+                "x": int(random.random() * r),
+                "y": int(random.random() * b),
+                "Red": int(random.random() * 0xFF00),
+                "Green": 0,
+                "Blue": 0,
+                "Alpha": 0,
+            },
+            # ... more vertices ...
+        )
+        mesh = ((0, 1, 2),)
+        win32gui.GradientFill(hdc, vertices, mesh, win32con.GRADIENT_FILL_TRIANGLE)</pre>
+                    </div>
+                    <button class="download-btn" onclick="downloadFile('Triangles.py')">Download File</button>
+                </div>
+                
+                <!-- BwHell.py -->
+                <div class="file-card">
+                    <div class="file-name">BwHell.py</div>
+                    <div class="file-description">Creates a visual distortion effect by inverting colors and shifting the screen slightly.</div>
+                    <div class="code-preview">
+                        <pre>import win32gui
+import win32con
+import ctypes
+import math
+import random
+
+user32 = ctypes.windll.user32
+user32.SetProcessDPIAware()
+[sw, sh] = [user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)]
+hdc = win32gui.GetDC(0)
+
+while True:
+    win32gui.BitBlt(
+        hdc,
+        0,
+        0,
+        sw,
+        sh,
+        hdc,
+        random.randrange(-3, 4),
+        random.randrange(-3, 4),
+        win32con.NOTSRCCOPY,
+    )</pre>
+                    </div>
+                    <button class="download-btn" onclick="downloadFile('BwHell.py')">Download File</button>
+                </div>
+                
+                <!-- bouncingsquares.py -->
+                <div class="file-card">
+                    <div class="file-name">bouncingsquares.py</div>
+                    <div class="file-description">Creates a colored square that bounces around your screen, changing color as it moves.</div>
+                    <div class="code-preview">
+                        <pre>from win32api import *
+from win32con import *
+from win32gui import *
+import random
+
+def main():
+    signX = 1
+    signY = 1
+    x = 30
+    y = 30
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        incrementor = 10
+        x += incrementor * signX
+        y += incrementor * signY
+        # ... draw rectangle logic ...</pre>
+                    </div>
+                    <button class="download-btn" onclick="downloadFile('bouncingsquares.py')">Download File</button>
+                </div>
+                
+                <!-- bouncingtext.py -->
+                <div class="file-card">
+                    <div class="file-name">bouncingtext.py</div>
+                    <div class="file-description">Displays "YOU ARE AN IDIOT!" text that bounces around the screen while changing colors.</div>
+                    <div class="code-preview">
+                        <pre>from win32api import *
+from win32gui import *
+import time
+import random
+
+def main():
+    x, y = 0, 0
+    signX, signY = 1, 1
+    incrementor = 5
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        text = "YOU ARE AN IDIOT!"
+        color = random.randint(0, 255) | (random.randint(0, 255) << 8) | (random.randint(0, 255) << 16)
+        # ... text display logic ...</pre>
+                    </div>
+                    <button class="download-btn" onclick="downloadFile('bouncingtext.py')">Download File</button>
+                </div>
+                
+                <!-- circles.py -->
+                <div class="file-card">
+                    <div class="file-name">circles.py</div>
+                    <div class="file-description">Draws random colorful circles all over your screen, creating an artistic pattern.</div>
+                    <div class="code-preview">
+                        <pre>from win32api import *
+from win32gui import *
+import time
+import random
+
+def main():
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        color = RGB(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        brush = CreateSolidBrush(color)
+        x1, y1, x2, y2 = random.randint(0, w), random.randint(0, h), random.randint(0, w), random.randint(0, h)
+        # ... circle drawing logic ...</pre>
+                    </div>
+                    <button class="download-btn" onclick="downloadFile('circles.py')">Download File</button>
+                </div>
+                
+                <!-- massduplicate.py -->
+                <div class="file-card">
+                    <div class="file-name">massduplicate.py</div>
+                    <div class="file-description">Creates a visual effect by duplicating and randomly placing screen sections across your display.</div>
+                    <div class="code-preview">
+                        <pre>from win32api import *
+from win32con import *
+from win32gui import *
+import random
+
+def main():
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        BitBlt(hdc, random.randint(-500, 500), random.randint(-500, 500), w, h, hdc, random.randint(-500, 500), random.randint(-500, 500), SRCCOPY)
+        ReleaseDC(0, hdc)</pre>
+                    </div>
+                    <button class="download-btn" onclick="downloadFile('massduplicate.py')">Download File</button>
+                </div>
+            </div>
+            
+            <button class="back-button" id="backBtn">← Go Back</button>
+        </div>
+    </div>
+    
+    <button class="theme-toggle" id="themeToggle">🌓</button>
+    
+    <script>
+        // Define file contents
+        const fileContents = {
+            'Triangles.py': `import win32con
+import win32gui
+import win32ui
+import ctypes
+import random
+
+
+def draw_gradient_triangle(hdc):
+    for _ in range(25):
+        l, t, r, b = win32gui.GetClientRect(win32gui.GetDesktopWindow())
+        vertices = (
+            {
+                "x": int(random.random() * r),
+                "y": int(random.random() * b),
+                "Red": int(random.random() * 0xFF00),
+                "Green": 0,
+                "Blue": 0,
+                "Alpha": 0,
+            },
+            {
+                "x": int(random.random() * r),
+                "y": int(random.random() * b),
+                "Red": 0,
+                "Green": int(random.random() * 0xFF00),
+                "Blue": 0,
+                "Alpha": 0,
+            },
+            {
+                "x": int(random.random() * r),
+                "y": int(random.random() * b),
+                "Red": 0,
+                "Green": 0,
+                "Blue": int(random.random() * 0xFF00),
+                "Alpha": 0,
+            },
+        )
+        mesh = ((0, 1, 2),)
+        win32gui.GradientFill(hdc, vertices, mesh, win32con.GRADIENT_FILL_TRIANGLE)
+
+
+def main():
+    user32 = ctypes.windll.user32
+    user32.SetProcessDPIAware()
+
+    hdc_screen = win32gui.GetDC(0)
+
+    try:
+        while True:
+            draw_gradient_triangle(hdc_screen)
+    finally:
+        win32gui.ReleaseDC(0, hdc_screen)
+
+
+if __name__ == "__main__":
+    main()`,
+            'BwHell.py': `import win32gui
+import win32con
+import ctypes
+import math
+import random
+
+user32 = ctypes.windll.user32
+user32.SetProcessDPIAware()
+[sw, sh] = [user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)]
+hdc = win32gui.GetDC(0)
+
+while True:
+
+    win32gui.BitBlt(
+        hdc,
+        0,
+        0,
+        sw,
+        sh,
+        hdc,
+        random.randrange(-3, 4),
+        random.randrange(-3, 4),
+        win32con.NOTSRCCOPY,
+    )`,
+            'bouncingsquares.py': `from win32api import *
+from win32con import *
+from win32gui import *
+import random
+
+def main():
+    signX = 1
+    signY = 1
+    x = 30
+    y = 30
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        incrementor = 10
+        x += incrementor * signX
+        y += incrementor * signY
+        top_x = 0 + x
+        top_y = 0 + y
+        bottom_x = 100 + x
+        bottom_y = 100 + y
+        brush = CreateSolidBrush(RGB(random.randint(0, 555), random.randint(0, 555), random.randint(0, 555)))
+        SelectObject(hdc, brush)
+        Rectangle(hdc, top_x, top_y, bottom_x, bottom_y)
+        if y >= GetSystemMetrics(SM_CYSCREEN):
+            signY = -1
+        if x >= GetSystemMetrics(SM_CXSCREEN):
+            signX = -1
+        if y == 0:
+            signY = 1
+        if x == 0:
+            signX = 1
+        DeleteObject(brush)
+        ReleaseDC(0, hdc)
+
+main()`,
+            'bouncingtext.py': `from win32api import *
+from win32gui import *
+import time
+import random
+
+def main():
+    x, y = 0, 0
+    signX, signY = 1, 1
+    incrementor = 5
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        text = "YOU ARE AN IDIOT!"
+        color = random.randint(0, 255) | (random.randint(0, 255) << 8) | (random.randint(0, 255) << 16)
+        SetTextColor(hdc, color)
+        SetBkMode(hdc, 0)
+        ExtTextOut(hdc, x, y, 0, None, text, None)
+        x += incrementor * signX
+        y += incrementor * signY
+        if y >= h or y <= 0:
+            signY *= -1
+        if x >= w or x <= 0:
+            signX *= -1
+        time.sleep(0.01)
+        ReleaseDC(0, hdc)
+
+main()`,
+            'circles.py': `from win32api import *
+from win32gui import *
+import time
+import random
+
+def main():
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        color = RGB(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        brush = CreateSolidBrush(color)
+        x1, y1, x2, y2 = random.randint(0, w), random.randint(0, h), random.randint(0, w), random.randint(0, h)
+        SelectObject(hdc, brush)
+        Ellipse(hdc, x1, y1, x2, y2)
+        DeleteObject(brush)
+        time.sleep(0.01)
+        ReleaseDC(0, hdc)
+
+main()`,
+            'massduplicate.py': `from win32api import *
+from win32con import *
+from win32gui import *
+import random
+
+def main():
+    while True:
+        w, h, hdc = GetSystemMetrics(0), GetSystemMetrics(1), GetDC(0)
+        BitBlt(hdc, random.randint(-500, 500), random.randint(-500, 500), w, h, hdc, random.randint(-500, 500), random.randint(-500, 500), SRCCOPY)
+        ReleaseDC(0, hdc)
+
+main()`
+        };
+        
+        // Elements
+        const welcomeScreen = document.getElementById('welcome');
+        const gdiList = document.getElementById('gdiList');
+        const showGdiBtn = document.getElementById('showGdiBtn');
+        const noThanksBtn = document.getElementById('noThanksBtn');
+        const backBtn = document.getElementById('backBtn');
+        const themeToggle = document.getElementById('themeToggle');
+        const themeToggleTop = document.getElementById('themeToggleTop');
+        const themeToggleTop2 = document.getElementById('themeToggleTop2');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeIcon2 = document.getElementById('themeIcon2');
+        const themeText = document.getElementById('themeText');
+        const themeText2 = document.getElementById('themeText2');
+        
+        // Toggle theme function
+        function toggleTheme() {
+            const isDarkMode = document.documentElement.classList.toggle('dark-mode');
+            
+            // Update UI for all theme toggles
+            if (isDarkMode) {
+                localStorage.setItem('theme', 'dark');
+                themeIcon.textContent = '☀️';
+                themeIcon2.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+                themeText2.textContent = 'Light Mode';
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeIcon.textContent = '🌙';
+                themeIcon2.textContent = '🌙';
+                themeText.textContent = 'Dark Mode';
+                themeText2.textContent = 'Dark Mode';
+            }
+        }
+        
+        // Event listeners
+        showGdiBtn.addEventListener('click', function() {
+            welcomeScreen.style.display = 'none';
+            gdiList.style.display = 'block';
+            window.scrollTo(0, 0);
+        });
+        
+        noThanksBtn.addEventListener('click', function() {
+            alert('Thank you for visiting! Come back anytime if you change your mind.');
+        });
+        
+        backBtn.addEventListener('click', function() {
+            gdiList.style.display = 'none';
+            welcomeScreen.style.display = 'flex';
+        });
+        
+        themeToggle.addEventListener('click', toggleTheme);
+        themeToggleTop.addEventListener('click', toggleTheme);
+        themeToggleTop2.addEventListener('click', toggleTheme);
+        
+        // Function to download files
+        function downloadFile(filename) {
+            const content = fileContents[filename];
+            const blob = new Blob([content], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+        }
+        
+        // Check for saved theme on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const isDarkMode = localStorage.getItem('theme') === 'dark';
+            
+            if (isDarkMode) {
+                document.documentElement.classList.add('dark-mode');
+                themeIcon.textContent = '☀️';
+                themeIcon2.textContent = '☀️';
+                themeText.textContent = 'Light Mode';
+                themeText2.textContent = 'Light Mode';
+            }
+        });
+    </script>
+</body>
+</html>
