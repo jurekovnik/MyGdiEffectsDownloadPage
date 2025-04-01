@@ -1,2 +1,2 @@
 # Gdi effects and HTML scripts
-you can download my Gdi effects in here or download my HTML script and the download files with some other icon then download then it means that its for educational and entertainment purposes only dont be dumb and try on VM
+Every of my Gdi and Html codes are completely harmless even the file named HarmlessGdiWithByteBeat.py is harmless even tho itself gives you a warning for epilepsy all of my scripts are not for epilepsy so if you are epileptic never try them, theese files are no supposed to harm your computer theyre completely harmless
